@@ -6,6 +6,7 @@ from models import storage
 from models.place import Place
 from models.city import City
 from models.state import State
+from models.user import User
 
 
 @app_views.route('/cities/<city_id>/places',
@@ -58,6 +59,10 @@ def create_place(city_id):
         abort(400, 'Not a JSON')
     if 'user_id' not in data:
         abort(400, 'Missing user_id')
+    user_id = data['user_id']
+    user = storage.get(User, user_id)
+    if user is None:
+        abort(404)
     if 'name' not in data:
         abort(400, 'Missing name')
     new_place = Place(**data)

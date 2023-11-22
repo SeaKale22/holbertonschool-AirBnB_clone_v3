@@ -9,9 +9,12 @@ from models.user import User
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
 def get_all_users():
     """gets all user objects"""
-    users = storage.all(User).values()
-    user_list = [user.to_dict() for user in users]
+    users = storage.all(User)
+    user_list = []
+    for user in users.values():
+        user_list.append(user.to_dict())
     return jsonify(user_list)
+
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def get_user(user_id):
@@ -20,6 +23,7 @@ def get_user(user_id):
     if user is None:
         abort(404)
     return jsonify(user.to_dict())
+
 
 @app_views.route('/users/<user_id>',
                  methods=['DELETE'],
@@ -32,6 +36,7 @@ def delete_user(user_id):
     user.delete()
     storage.save()
     return jsonify({})
+
 
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
 def create_user():
@@ -47,6 +52,7 @@ def create_user():
     storage.new(new_user)
     storage.save()
     return jsonify(new_user.to_dict()), 201
+
 
 @app_views.route('/users/<user_id>',
                  methods=['PUT'],
